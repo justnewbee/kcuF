@@ -40,7 +40,7 @@ kcuF.template.addBatch({
 			"<label>#{Testcase}</label>",
 			"<select id=\"kcuF-cases\"><option value=\"\">&nbsp;</option></select>",
 			"<button id=\"kcuF-go\" class=\"blue\">#{Go}</button>",
-			"<button id=\"kcuF-standalone\">#{Standalone}</button>",
+//			"<button id=\"kcuF-standalone\">#{Standalone}</button>",
 			"<button id=\"kcuF-code\">#{Code}</button>",
 			"<button id=\"kcuF-testcase\">#{Testcase}</button>",
 			"<button id=\"kcuF-dependances\">#{Dependances}</button>",

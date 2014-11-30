@@ -38,7 +38,7 @@
 		QUERY_MAIN: "div.kcuF-main",
 		QUERY_CASES: "#kcuF-cases",
 		QUERY_GO: "#kcuF-go",
-		QUERY_STANDALONE: "#kcuF-standalone",
+//		QUERY_STANDALONE: "#kcuF-standalone",
 		QUERY_CODE: "#kcuF-code",
 		QUERY_TESTCASE: "#kcuF-testcase",
 		QUERY_DEPENDANCES: "#kcuF-dependances",
@@ -192,11 +192,11 @@
 				
 				if (node.is(main.QUERY_GO)) {
 					$(main.QUERY_IFRAME)[0].contentWindow.doTest(util.toJson(main.retrieveParams()));
-				} else if (node.is(main.QUERY_STANDALONE)) {
-					var framedConf = $.extend({}, config);
-					delete framedConf.optsExt;
-					delete framedConf.opts;
-					window.open("framed.html?c=" + encodeURIComponent(util.toJson(framedConf)) + "#o=" + encodeURIComponent(util.toJson(main.retrieveParams())));
+//				} else if (node.is(main.QUERY_STANDALONE)) {
+//					var framedConf = $.extend({}, config);
+//					delete framedConf.optsExt;
+//					delete framedConf.opts;
+//					window.open("framed.html?c=" + encodeURIComponent(util.toJson(framedConf)) + "#o=" + encodeURIComponent(util.toJson(main.retrieveParams())));
 				} else if (node.is(main.QUERY_CODE)) {
 					main._openDialog(node, {
 						buttons: [{
