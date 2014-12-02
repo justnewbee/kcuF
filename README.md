@@ -19,3 +19,6 @@ i will change the way it works, and i will change the code structure, so i decid
 in the new version, i'm using LESS as the css preprocessor for ease of theming, and will change the style to a modern flat view, will add in iconfont from icomoon.
 
 see u later...
+
+找个字体
+色调
