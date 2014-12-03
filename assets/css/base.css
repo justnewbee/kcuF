@@ -1,7 +1,7 @@
 @font-face {
 	font-family: "OpenSans";
 	font-style: normal;
-	font-weight: normal;
+	font-weight: 300;
 	src: url("../fonts/opensans-300.eot?#iefix") format("embedded-opentype"),
 		url("../fonts/opensans-300.woff") format("woff"),
 		url("../fonts/opensans-300.ttf") format("truetype"),
@@ -11,7 +11,7 @@
 @font-face {
 	font-family: "OpenSans";
 	font-style: normal;
-	font-weight: 300;
+	font-weight: 400;
 	src: url("../fonts/opensans-400.eot?#iefix") format("embedded-opentype"),
 		url("../fonts/opensans-400.woff") format("woff"),
 		url("../fonts/opensans-400.ttf") format("truetype"),
@@ -39,13 +39,24 @@
 }
 
 html, body {
-	font-family: "OpenSans", "Helvetica Neue", Calibri, Helvetica, Arial, sans-serif;
-}
-pre, code, kbd, samp {
-  font-family: Menlo, Consolas, "Courier New", Courier, Mono, monospace;
+	font: 400 16px/1.5 "OpenSans", "Helvetica Neue", Calibri, Helvetica, Arial, sans-serif;
 }
 
 h1, h2, h3, h4, h5, h6 {
 	font-family: "Helvetica Neue", sans-serif;
 	font-weight: 600;
+}
+
+pre, code, kbd, samp {
+  font-family: Menlo, Consolas, "Courier New", Courier, Mono, monospace;
+}
+
+a {
+	color: #47D;
+	text-decoration: none;
+	transition: all 0.2s ease-in-out 0s;
+}
+
+a:hover, a:focus {
+	color: #25B;
 }
