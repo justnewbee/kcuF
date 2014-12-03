@@ -1,4 +1,6 @@
 (function(kcuF, $) {
+	"use strict";
+	
 	/**
 	 * kcuF Dialog control.
 	 * @author <a href="mailto:justnewbee@gmail.com">Jianchun Wang</a>
@@ -59,13 +61,12 @@
 	var Dialog = kcuF.ns("ui.Dialog"),
 		
 		util = kcuF.ns("util"),
-		template = kcuF.ns("template");
-	
-	$.extend(Dialog, /** @lends kcuF.ui.Dialog */{
+		template = kcuF.ns("template"),
+		
 		/**
 		 * Default options for {@link kcuF.ui.Dialog} instances.
 		 */
-		OPTS: {
+		OPTS = {
 			/**
 			 * Title shown in the dialog header. If set to false, the header won't show.
 			 * @type String
@@ -141,7 +142,7 @@
 		 * Default options for {@link kcuF.ui.Dialog} class. It will affect the overlay color and opacity, and the overall z-index of all dialogs.
 		 * @namespace
 		 */
-		G_SETTING: {
+		SETTINGS = {
 			/**
 			 * The overlay background color.
 			 * @type Function
@@ -158,22 +159,7 @@
 			 */
 			zIndex: 1000
 		},
-		
-		QUERY_OVERLAY: "#kcuF-dialog-overlay",
-		QUERY_WRAPPER: "div.kcuF-dialog-wrapper",
-		QUERY_DIALOG: "div.kcuF-dialog",
-		QUERY_DIALOG_HEADER: "div.dlg-header",
-		QUERY_DIALOG_CLOSE: "div.dlg-header>a.dlg-close",
-		QUERY_DIALOG_BODY: "div.dlg-body",
-		QUERY_DIALOG_CONTENT: "div.dlg-content",
-		QUERY_DIALOG_FOOTER: "div.dlg-footer",
-		QUERY_DIALOG_BUTTON: "div.dlg-footer>button,div.dlg-footer>a.kcuF-button",
-		
-		DATAKEY_INSTANCE: "nb_dialog_instance",
-		DATAKEY_BUTTON_OPTS: "nb_dialog_button_opts",
-		DATAKEY_WRAPPER_ZINDEX: "nb_dialog_wrapper_zindex",
-		
-		DATA_BUTTON: {
+		DATA_BUTTON = {
 			text: "",
 			align: "",
 			tooltip: "",
@@ -183,200 +169,190 @@
 			defaultButton: false,// whether it's a default button, NOTE: only the first true in buttons will be set as default
 			callback: null
 		},
-		
-		/**
-		 * The template string of a dialog wrapper. A wrapper holds one or more dialog instance.
-		 * It's at the same level of dialog overlay.
-		 * @type String
-		 */
-//		/**
-//		 * The template string of a button node in a dialog instance.
-//		 * @type String
-//		 */
-//		TMPL_BUTTON: "<button title=\"${tooltip}\" class=\"${align}\">${text}</button>",
-		/**
-		 * Provides an interface for setups dialog component with user-defined global options.
-		 * <b>NOTE:</b> you can only call this before any instance of Dialog is created.
-		 * @param {Object} opts
-		 * @see kcuF.ui.Dialog.G_SETTING
-		 */
-		setupDialog: function(opts) {
-			$.extend(Dialog.G_SETTING, opts);
+		QUERY = {
+			OVERLAY: "#kcuF-dialog-overlay",
+			WRAPPER: "div.kcuF-dialog-wrapper",
+			DIALOG: "div.kcuF-dialog",
+			DIALOG_HEADER: "div.dlg-header",
+			DIALOG_CLOSE: "div.dlg-header>a.dlg-close",
+			DIALOG_BODY: "div.dlg-body",
+			DIALOG_CONTENT: "div.dlg-content",
+			DIALOG_FOOTER: "div.dlg-footer",
+			DIALOG_BUTTON: "div.dlg-footer>button,div.dlg-footer>a.kcuF-button"
 		},
-		
-		/* private(s) in Dislog instances, function names are like _xxx */
-		_doOverlay: function() {
-			var $overlay = Dialog.__findOrCreateOverlay__();
-			if ($overlay.is(":hidden")) {// the key handlers will be unbind when $overlay is hidden, making no pollution to global environment
-				$(document).bind("keydown", Dialog.__keydownHandler__);
-				$(window).bind("resize", Dialog.__resizeHandler__);
-				$(window).bind("scroll", Dialog.__scrollHandler__);
-				$overlay.show();
-			}
-			return $overlay;
-		},
-		
-		_doWrapper: function(modal) {
-			var wrapper;
-			if (modal) {// for modal dialog, the older dialogs will be dimmed by descending z-index of their wrapper, and a new wrapper is always created
-				$("body").children(Dialog.QUERY_WRAPPER).css({
-					zIndex: Dialog.G_SETTING.zIndex - 1
-				});
-				wrapper = Dialog.__createWrapper__().css("z-index", Dialog.G_SETTING.zIndex + 1);
-			} else {
-				wrapper = Dialog.__findTopMostWrapper__() || Dialog.__createWrapper__();
-			}
-			
-			return wrapper;
-		},
-		
-		_doSize: function() {
-			var $overlay = $("body").children(Dialog.QUERY_OVERLAY).css("width", "auto"),// auto to get the real width when resize from big to small
-				$wrapper = $("body").children(Dialog.QUERY_WRAPPER).css("width", "auto"),
-				vp = util.viewport();
-			
-			$overlay.css({
-				width: vp.fw,
-				height: $.browser.msie ? vp.vh + 30 : vp.vh// when h-scrollbar disappears after maximize, have to count that in...
-			});
-			$wrapper.css({
-				width: vp.fw,
-				height: vp.fh
-			});
-		},
-		
-		_undoOverlay: function(dlg) {
-			var wrapper = dlg._wrapper;
-			if (wrapper.find(Dialog.QUERY_DIALOG).length) {
-				return;
-			}
-			
-			wrapper.remove();
-			wrapper = Dialog.__findTopMostWrapper__();
-			if (wrapper) {// previously-closed dialog probably is a model dialog, make the very below one in light
-				wrapper.css("z-index", Dialog.G_SETTING.zIndex + 1);
-				var topMostDlg = Dialog.__findTopMostDialog__();
-				if (topMostDlg) {
-					Dialog._positioning(topMostDlg);
-				}
-			} else {
-				$("body").children(Dialog.QUERY_OVERLAY).hide();
-				$(document).unbind("keydown", Dialog.__keydownHandler__);
-				$(window).unbind("resize", Dialog.__resizeHandler__);
-				$(window).unbind("scroll", Dialog.__scrollHandler__);
-			}
-		},
-		
-		_positioning: function(dlg) {
-			var ui = dlg._ui,
-				w = ui.outerWidth(),
-				h = ui.outerHeight(),
-				l = Math.max(($(window).width() - w) * 0.5 + $(document).scrollLeft(), 0),
-				t = Math.max(($(window).height() - h) * 0.5 + $(document).scrollTop(), 0);
-			
-			ui.css({
-				left: l,
-				top: t
-			});
-		},
-		
-		/**
-		 * Get the unique overlay node for Dialog class, if no create one.
-		 * This will only happen when the very first time a Dialog instance is created.
-		 * @return {JQNode}
-		 */
-		__findOrCreateOverlay__: function() {
-			var $overlay = $("body").children(Dialog.QUERY_OVERLAY);
-			if (!$overlay.length) {
-				$overlay = template.getAsDom$("Dialog.overlay").css({
-					zIndex: Dialog.G_SETTING.zIndex,
-					backgroundColor: Dialog.G_SETTING.overlayColor,
-					opacity: Dialog.G_SETTING.overlayOpacity
-				}).appendTo("body");
-			}
-			return $overlay;
-		},
-		/**
-		 * Create and return a wrapper node for one Dialog instance.
-		 * @return {JQNode}
-		 */
-		__createWrapper__: function() {
-			return template.getAsDom$("Dialog.wrapper").appendTo("body").data(Dialog.DATAKEY_WRAPPER_ZINDEX, 0);
-		},
-		/**
-		 * Find the top-most wrapper node.
-		 * @return {JQNode|null}
-		 */
-		__findTopMostWrapper__: function() {
-			var topIdx = 0,
-				topWrapper = null;
-			$("body").children(Dialog.QUERY_WRAPPER).each(function() {
-				var wrapper = $(this),
-					wpIdx = parseInt(wrapper.css("zIndex"), 10) || 0;
-				if (!topWrapper || wpIdx >= topIdx) {
-					topWrapper = wrapper;
-					topIdx = wpIdx;
-				}
-			});
-			return topWrapper;
-		},
-		/**
-		 * Find the top-most Dialog instance.
-		 * @return {JQNode|null}
-		 */
-		__findTopMostDialog__: function() {
-			var topMostWrapper = Dialog.__findTopMostWrapper__(),
-				dlg = null,
-				zIndex = 0;
-			
-			if (!topMostWrapper) {
-				return null;
-			}
-			
-			topMostWrapper.children().each(function() {
-				var dlgEl = $(this),
-					dlgElZ = dlgEl.css("zIndex");
-				if (!dlg || dlgElZ >= zIndex) {
-					dlg = dlgEl.data(Dialog.DATAKEY_INSTANCE);
-					zIndex = dlgElZ;
-				}
-			});
-			return dlg;
-		},
-		/**
-		 * Keydown handler for document, when a Dialog instance is shown, especially for Enter and ESC.
-		 * @param {Event} e
-		 */
-		__keydownHandler__: function(e) {
-			var topMostDlg = Dialog.__findTopMostDialog__();
-			if (!topMostDlg) {
-				return;
-			}
-			
-			return topMostDlg._handleKeydown(e);
-		},
-		/**
-		 * Resize handler for window, for re-positioning top-most Dialog instance.
-		 * @param {Event} e
-		 */
-		__resizeHandler__: function(e) {
-			var topMostDlg = Dialog.__findTopMostDialog__();
-			Dialog._doSize();
-			if (topMostDlg) {
-				Dialog._positioning(topMostDlg);
-			}
-		},
-		/**
-		 * Scroll handler for window, for re-positioning top-most Dialog instance.
-		 * @param {Event} e
-		 */
-		__scrollHandler__: function() {
-			var topMostDlg = Dialog.__findTopMostDialog__();
-			if (topMostDlg) {
-				topMostDlg._handleScroll();
-			}
+		DATA_KEYS = {
+			INSTANCE: "nb_dialog_instance",
+			BUTTON_OPTS: "nb_dialog_button_opts",
+			WRAPPER_ZINDEX: "nb_dialog_wrapper_zindex"
+		};
+	
+	function doOverlay() {
+		// get the unique overlay node for Dialog class, if no create one.
+		// this will only happen when the very first time a Dialog instance is created
+		var $overlay = $("body").children(QUERY.OVERLAY);
+		if (!$overlay.length) {
+			$overlay = template.getAsDom$("Dialog.overlay").css({
+				zIndex: SETTINGS.zIndex,
+				backgroundColor: SETTINGS.overlayColor,
+				opacity: SETTINGS.overlayOpacity
+			}).appendTo("body");
 		}
-	});
+		
+		if ($overlay.is(":hidden")) {// the key handlers will be unbind when $overlay is hidden, making no pollution to global environment
+			$(document).bind("keydown", __keydownHandler__);
+			$(window).bind("resize", __resizeHandler__);
+			$(window).bind("scroll", __scrollHandler__);
+			$overlay.show();
+		}
+		return $overlay;
+	}
+	function undoOverlay(dlg) {
+		var wrapper = dlg._wrapper;
+		if (wrapper.find(QUERY.DIALOG).length) {
+			return;
+		}
+		
+		wrapper.remove();
+		wrapper = __findTopMostWrapper__();
+		if (wrapper) {// previously-closed dialog probably is a model dialog, make the very below one in light
+			wrapper.css("z-index", SETTINGS.zIndex + 1);
+			var topMostDlg = __findTopMostDialog__();
+			if (topMostDlg) {
+				doPositioning(topMostDlg);
+			}
+		} else {
+			$("body").children(QUERY.OVERLAY).hide();
+			$(document).unbind("keydown", __keydownHandler__);
+			$(window).unbind("resize", __resizeHandler__);
+			$(window).unbind("scroll", __scrollHandler__);
+		}
+	}
+	
+	/**
+	 * Create and return a wrapper node for one Dialog instance.
+	 * @return {JQNode}
+	 */
+	function __createWrapper__() {
+		return template.getAsDom$("Dialog.wrapper").appendTo("body").data(DATA_KEYS.WRAPPER_ZINDEX, 0);
+	}
+	
+	function doWrapper(modal) {
+		var wrapper;
+		if (modal) {// for modal dialog, the older dialogs will be dimmed by descending z-index of their wrapper, and a new wrapper is always created
+			$("body").children(QUERY.WRAPPER).css({
+				zIndex: SETTINGS.zIndex - 1
+			});
+			wrapper = __createWrapper__().css("z-index", SETTINGS.zIndex + 1);
+		} else {
+			wrapper = __findTopMostWrapper__() || __createWrapper__();
+		}
+		
+		return wrapper;
+	}
+	function doSizing() {
+		var $overlay = $("body").children(QUERY.OVERLAY).css("width", "auto"),// auto to get the real width when resize from big to small
+			$wrapper = $("body").children(QUERY.WRAPPER).css("width", "auto"),
+			vp = util.viewport();
+		
+		$overlay.css({
+			width: vp.fw,
+			height: $.browser.msie ? vp.vh + 30 : vp.vh// when h-scrollbar disappears after maximize, have to count that in...
+		});
+		$wrapper.css({
+			width: vp.fw,
+			height: vp.fh
+		});
+	}
+	function doPositioning(dlg) {
+		var ui = dlg._ui,
+			w = ui.outerWidth(),
+			h = ui.outerHeight(),
+			l = Math.max(($(window).width() - w) * 0.5 + $(document).scrollLeft(), 0),
+			t = Math.max(($(window).height() - h) * 0.5 + $(document).scrollTop(), 0);
+		
+		ui.css({
+			left: l,
+			top: t
+		});
+	}
+	
+	/**
+	 * Find the top-most wrapper node.
+	 * @return {JQNode|null}
+	 */
+	function __findTopMostWrapper__() {
+		var topIdx = 0,
+			topWrapper = null;
+		$("body").children(QUERY.WRAPPER).each(function() {
+			var wrapper = $(this),
+				wpIdx = parseInt(wrapper.css("zIndex"), 10) || 0;
+			if (!topWrapper || wpIdx >= topIdx) {
+				topWrapper = wrapper;
+				topIdx = wpIdx;
+			}
+		});
+		return topWrapper;
+	}
+	/**
+	 * Find the top-most Dialog instance.
+	 * @return {JQNode|null}
+	 */
+	function __findTopMostDialog__() {
+		var topMostWrapper = __findTopMostWrapper__(),
+			dlg = null,
+			zIndex = 0;
+		
+		if (!topMostWrapper) {
+			return null;
+		}
+		
+		topMostWrapper.children().each(function() {
+			var dlgEl = $(this),
+				dlgElZ = dlgEl.css("zIndex");
+			if (!dlg || dlgElZ >= zIndex) {
+				dlg = dlgEl.data(DATA_KEYS.INSTANCE);
+				zIndex = dlgElZ;
+			}
+		});
+		return dlg;
+	}
+	/**
+	 * Keydown handler for document, when a Dialog instance is shown, especially for Enter and ESC.
+	 * @param {Event} e
+	 */
+	function __keydownHandler__(e) {
+		var topMostDlg = __findTopMostDialog__();
+		if (!topMostDlg) {
+			return;
+		}
+		
+		return topMostDlg._handleKeydown(e);
+	}
+	/**
+	 * Resize handler for window, for re-positioning top-most Dialog instance.
+	 * @param {Event} e
+	 */
+	function __resizeHandler__() {
+		var topMostDlg = __findTopMostDialog__();
+		
+		doSizing();
+		
+		if (topMostDlg) {
+			doPositioning(topMostDlg);
+		}
+	}
+	/**
+	 * Scroll handler for window, for re-positioning top-most Dialog instance.
+	 * @param {Event} e
+	 */
+	function __scrollHandler__() {
+		var topMostDlg = __findTopMostDialog__();
+		if (topMostDlg) {
+			topMostDlg._handleScroll();
+		}
+	}
+	
+	Dialog.OPTS = OPTS;// for the ease of testing
 	
 	$.extend(Dialog.prototype, /** @lends kcuF.ui.Dialog.prototype */{
 		/**
@@ -404,25 +380,25 @@
 		 * @param {Object} opts
 		 */
 		_init: function(opts) {
-			var options = $.extend({}, Dialog.OPTS, opts),
-				$wrapper = Dialog._doWrapper(options.modal),
+			var options = $.extend({}, OPTS, opts),
+				$wrapper = doWrapper(options.modal),
 				$ui = template.getAsDom$("Dialog", {
 					title: options.title,
 					width: options.width,
 					close: "x"
-				}).data(Dialog.DATAKEY_INSTANCE, this).bind("mousedown", {
+				}).data(DATA_KEYS.INSTANCE, this).bind("mousedown", {
 					dialog: this
 				}, function(e) {
 					e.data.dialog._makeTopMost();
 				}).draggable({
-					handle: Dialog.QUERY_DIALOG_HEADER,
+					handle: QUERY.DIALOG_HEADER,
 					containment: $wrapper.get(0)// must get 0, use the concrete dom node
 				});
 			
-			Dialog._doOverlay();
+			doOverlay();
+			doSizing();
 			
-			Dialog._doSize();
-			$ui.appendTo($wrapper).find(Dialog.QUERY_DIALOG_CLOSE).bind("click", {
+			$ui.appendTo($wrapper).find(QUERY.DIALOG_CLOSE).bind("click", {
 				dialog: this
 			}, function(e) {
 				e.data.dialog._handleOperation($(this));
@@ -435,16 +411,16 @@
 			this._update();
 			
 			var dlg = this,
-				$footer = $ui.find(Dialog.QUERY_DIALOG_FOOTER);
+				$footer = $ui.find(QUERY.DIALOG_FOOTER);
 			if (options.buttons && $.isArray(options.buttons) && options.buttons.length) {
 				$footer.show();
 				var dfltBtn = "";
 				$.each(options.buttons, function(idx, itm) {
 					var btnData = $.extend({
 						index: idx// the dom structure may mess with the real index of button, we have to put a index here
-					}, Dialog.DATA_BUTTON, itm);
+					}, DATA_BUTTON, itm);
 					
-					var $btn = $(itm.realButton ? "<button></button>" : "<a class=\"kcuF-button\" href=\"javascript:void(0);\"></a>").data(Dialog.DATAKEY_BUTTON_OPTS, btnData).bind("click", {
+					var $btn = $(itm.realButton ? "<button></button>" : "<a class=\"kcuF-button\" href=\"javascript:void(0);\"></a>").data(DATA_KEYS.BUTTON_OPTS, btnData).bind("click", {
 						dialog: dlg
 					}, function(e) {
 						e.data.dialog._handleOperation($(this));
@@ -474,14 +450,14 @@
 				$footer.hide();
 			}
 			
-			$ui.find(Dialog.QUERY_DIALOG_CONTENT).append(options.content);
+			$ui.find(QUERY.DIALOG_CONTENT).append(options.content);
 			
 			this._makeTopMost();
 			
 			if (options.onBeforeOpen) {
 				options.onBeforeOpen.call(this);
 			}
-			Dialog._positioning(this);
+			doPositioning(this);
 			
 			setTimeout(function() {// IE has problem if we try to focus a text field in dialog, due to that body click event has not ended yet
 				var focused = false;
@@ -501,7 +477,7 @@
 					});
 				}
 				if (!focused) {// due to bug #402339, we cannot focus elmt, instead we focus the dlg-body
-					dlg._ui.find(Dialog.QUERY_DIALOG_BODY).focus();
+					dlg._ui.find(QUERY.DIALOG_BODY).focus();
 				}
 				
 				if (options.onOpen) {
@@ -520,7 +496,7 @@
 				return;
 			}
 			this._ui.remove();
-			Dialog._undoOverlay(this);
+			undoOverlay(this);
 			
 			if (this._options.refocus) {
 				$(this._options.refocus).focus();
@@ -582,7 +558,7 @@
 		
 		_handleScroll: function() {
 			if (this._options.reposition) {
-				Dialog._positioning(this);
+				doPositioning(this);
 			}
 		},
 		
@@ -596,7 +572,7 @@
 				}
 				this._close();
 			} else {// button
-				var btnOpts = $nd.data(Dialog.DATAKEY_BUTTON_OPTS);
+				var btnOpts = $nd.data(DATA_KEYS.BUTTON_OPTS);
 				if ($nd.hasClass("disabled") || !btnOpts) {
 					return;
 				}
@@ -614,12 +590,12 @@
 		
 		_makeTopMost: function() {
 			var zIdx = parseInt(this._ui.css("zIndex"), 10) || 0,
-				maxIdx = this._wrapper.data(Dialog.DATAKEY_WRAPPER_ZINDEX) || 0;
+				maxIdx = this._wrapper.data(DATA_KEYS.WRAPPER_ZINDEX) || 0;
 			
 			if (!zIdx || zIdx < maxIdx) {
 				maxIdx += 1;
 				this._ui.css("zIndex", maxIdx);
-				this._wrapper.data(Dialog.DATAKEY_WRAPPER_ZINDEX, maxIdx);
+				this._wrapper.data(DATA_KEYS.WRAPPER_ZINDEX, maxIdx);
 			}
 		},
 		
@@ -664,7 +640,7 @@
 		 * @return {JQNode}
 		 */
 		find: function(queryStr) {
-			return this._ui.find(Dialog.QUERY_DIALOG_CONTENT).find(queryStr);
+			return this._ui.find(QUERY.DIALOG_CONTENT).find(queryStr);
 		},
 		/**
 		 * Close and destroy the dialog instance via code.
@@ -679,8 +655,8 @@
 		 * @return {JQNode}
 		 */
 		findButton: function(idx) {
-			return this._ui.find(Dialog.QUERY_DIALOG_BUTTON).filter(function() {
-				return $(this).data(Dialog.DATAKEY_BUTTON_OPTS).index === idx;
+			return this._ui.find(QUERY.DIALOG_BUTTON).filter(function() {
+				return $(this).data(DATA_KEYS.BUTTON_OPTS).index === idx;
 			});
 		},
 		/**
@@ -732,7 +708,7 @@
 					$btn.addClass("green");
 				}
 				
-				$.extend($btn.data(Dialog.DATAKEY_BUTTON_OPTS), btnOpts);
+				$.extend($btn.data(DATA_KEYS.BUTTON_OPTS), btnOpts);
 			}
 			
 			return this;
@@ -740,8 +716,8 @@
 		_update: function() {
 			var ui = this._ui,
 				options = this._options,
-				$header = ui.find(Dialog.QUERY_DIALOG_HEADER),
-				$close = ui.find(Dialog.QUERY_DIALOG_CLOSE);
+				$header = ui.find(QUERY.DIALOG_HEADER),
+				$close = ui.find(QUERY.DIALOG_CLOSE);
 			
 			if (options.title) {
 				$header.find("div.dlg-title-inner").html(options.title);
