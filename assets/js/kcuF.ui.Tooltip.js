@@ -1,4 +1,6 @@
 (function(kcuF, $) {
+	"use strict";
+	
 	/**
 	 * @class Tooltip.
 	 * @paran {Object} opts
@@ -7,14 +9,9 @@
 	var Tooltip = kcuF.ns("ui.Tooltip"),
 		
 		util = kcuF.ns("util"),
-		template = kcuF.ns("template");
-	
-	$.extend(Tooltip, /** @lends kcuF.ui.Tooltip */{
-		/**
-		 * Default options for {@link kcuF.ui.Tooltip}.
-		 * @namespace
-		 */
-		OPTS: {
+		template = kcuF.ns("template"),
+		
+		OPTS = {
 			/**
 			 * CMD switch, allowed values are "destroy"
 			 * @type String
@@ -64,29 +61,25 @@
 			 */
 			onClose: null
 		},
-		
-		ID_TOOLTIP_SOLO: "kcuF-tooltip-solo",
-		
-		/**
-		 * Global show handler in tooltip world.
-		 */
-		_showHandler: function(e) {
-			e.data.instance._show();
-		},
-		/**
-		 * Global hide handler in tooltip world.
-		 */
-		_hideHandler: function(e) {
-			e.data.instance._hide();
-		},
+		ID_TOOLTIP_SOLO = "kcuF-tooltip-solo";
+	
+	function showHandler(e) {
+		e.data.instance._show();
+	}
+	function hideHandler(e) {
+		e.data.instance._hide();
+	}
+	
+	$.extend(Tooltip, /** @lends kcuF.ui.Tooltip */{
+		OPTS: OPTS,
 		
 		show: function(opts) {
-			var options = $.extend({}, Tooltip.OPTS, opts),
-				ui = $("#" + Tooltip.ID_TOOLTIP_SOLO),
+			var options = $.extend({}, OPTS, opts),
+				ui = $("#" + ID_TOOLTIP_SOLO),
 				node = options.node;
 			
 			if (!ui.length) {
-				ui = template.getAsDom$("Tooltip").attr("id", Tooltip.ID_TOOLTIP_SOLO).appendTo("body");
+				ui = template.getAsDom$("Tooltip").attr("id", ID_TOOLTIP_SOLO).appendTo("body");
 			}
 			
 			ui.empty().append(options.message);
@@ -153,7 +146,7 @@
 		},
 		
 		hide: function() {
-			$("#" + Tooltip.ID_TOOLTIP_SOLO).hide();
+			$("#" + ID_TOOLTIP_SOLO).hide();
 		}
 	});
 	
@@ -210,10 +203,10 @@
 			// we cannot use hover cause it cannot be unbound
 			node.bind("mouseenter", {
 				instance: this
-			}, Tooltip._showHandler);
+			}, showHandler);
 			node.bind("mouseleave mousedown", {
 				instance: this
-			}, Tooltip._hideHandler);
+			}, hideHandler);
 		},
 		
 		_destroy: function() {
@@ -224,8 +217,8 @@
 			if (this._options.tip) {
 				node.attr("title", this._options.tip);
 			}
-			node.unbind("mouseenter", Tooltip._showHandler);
-			node.unbind("mouseleave mousedown", Tooltip._hideHandler);
+			node.unbind("mouseenter", showHandler);
+			node.unbind("mouseleave mousedown", hideHandler);
 			node.data(Tooltip.DATA_KEY, null);
 		},
 		

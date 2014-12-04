@@ -1,4 +1,6 @@
 (function(kcuF, $) {
+	"use strict";
+	
 	/**
 	 * Menu component.
 	 * @author <a href="mailto:justnewbee@gmail.com">Jianchun Wang</a>

@@ -1,4 +1,6 @@
 (function(kcuF, $) {
+	"use strict";
+	
 	/**
 	 * @namespace
 	 * @name kcuF.i18n

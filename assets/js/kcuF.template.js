@@ -1,4 +1,6 @@
 (function(kcuF, $) {
+	"use strict";
+	
 	/**
 	 * @namespace
 	 * @name kcuF.template
@@ -66,7 +68,7 @@
 			tmpl = $.isArray(tmpl) ? tmpl.join("") : (tmpl || "");
 			data = data || {};
 			
-			return tmpl.replace(/\\?([#\$])\{([^{}]+)\}/g, function(match, $_1, $_2) {// replace function gives arguments as: match, group1, group2, ..., index, the_string
+			return tmpl.replace(/\\?([#\$])\{([^\{}]+)}/g, function(match, $_1, $_2) {// replace function gives arguments as: match, group1, group2, ..., index, the_string
 				if (match.charAt(0) === "\\") {// escape so that it won't be processed
 					return match.slice(1);
 				}

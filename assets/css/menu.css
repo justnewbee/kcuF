@@ -12,6 +12,7 @@ ul.kcuF-menu {
 		-moz-box-shadow: 1px 1px 3px #999;
 		-webkit-box-shadow: 1px 1px 3px #999;
 	top: -10000px;
+	list-style: none;
 }
 ul.kcuF-menu li {
 	line-height: 20px;

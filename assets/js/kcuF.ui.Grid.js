@@ -1,4 +1,6 @@
 (function(kcuF, $) {
+	"use strict";
+	
 	/**
 	 * kcuF Grid control.
 	 * @author <a href="mailto:jianchunw@hz.webex.com">Jianchun Wang</a>
@@ -24,25 +26,9 @@
 		 */
 		GridItem = kcuF.ns("ui.Grid.Item"),
 		
-		template = kcuF.ns("template");
-	
-	$.extend(GridItem.prototype, {
-		data: null,
-		level: 0,
-		parent: null,
-		children: null,
+		template = kcuF.ns("template"),
 		
-		_init: function(data) {
-			this.data = data;
-		}
-	});
-	
-	$.extend(Grid, /** @lends kcuF.ui.Grid */{
-		/**
-		 * Default options.
-		 * @namespace
-		 */
-		OPTS: {
+		OPTS = {
 			/**
 			 * @type String|JQNode|DomNode
 			 */
@@ -128,17 +114,7 @@
 			 */
 			onItemDeleted: null
 		},
-		
-		OPTS_TREE: {
-			children: "_children_",
-			folded: "&#9727;",
-			unfolded: "&#9720;",
-			autoUnfold: false
-		},
-		/**
-		 * @namespace
-		 */
-		DATA_COLUMN: {
+		DATA_COLUMN = {
 			/**
 			 * The column index. It's readonly! Can only be set by grid itself.
 			 * The index is set when initialized, and can only be changed when dragging header.
@@ -196,55 +172,66 @@
 			 */
 			edit: false
 		},
-		
-		QUERY_EDITBOX: "input.grid-editbox",
-		QUERY_HEADER: "div.grid-header",
-		QUERY_HEADER_ROW: "div.grid-header thead:first>tr",
-		QUERY_HEADER_ROW_GHOST: "div.grid-body thead:first>tr",
-		QUERY_COLGROUP: "div.grid-body colgroup:first",
-		QUERY_BODY_WRAPPER: "div.grid-body",
-		QUERY_BODY: "div.grid-body tbody",
-		QUERY_ITEM_ROW: "div.grid-body tbody>tr",
-		QUERY_TREE_TOGGLER: "div.grid-body tbody>tr .grid-tree-toggler",
-		QUERY_FOOTER: "div.grid-footer",
-		
-		/**
-		 * Data key used by jQuery data function for each cell in header.
-		 * @type String
-		 */
-		DATAKEY_COLUMN: "kcuF_grid_column",
-		/**
-		 * Data key used by jQuery data function for each row in body.
-		 * @type String
-		 */
-		DATAKEY_ITEM: "kcuF_grid_item",
-		
-		_compareAsDate: function(str1, str2) {
-			var date1 = new Date(str1),
-				date2 = new Date(str2);
-			
-			return date1 > date2 ? 1 : (date1 < date2 ? -1 : 0);
+		OPTS_TREE = {
+			children: "_children_",
+			folded: "&#9727;",
+			unfolded: "&#9720;",
+			autoUnfold: false
 		},
-		
-		_compareAsNumber: function(str1, str2) {
-			var num1 = parseFloat(str1),
-				num2 = parseFloat(str2);
-			
-			if (isNaN(num1) && isNaN(num2)) {
-				return str1 > str2 ? 1 : (str1 < str2 ? -1 : 0);
-			} else if (isNaN(num1)) {
-				return -1;
-			} else if (isNaN(num2)) {
-				return 1;
-			} else {
-				return num1 > num2 ? 1 : (num1 < num2 ? -1 : 0);
-			}
+		QUERY = {
+			EDITBOX: "input.grid-editbox",
+			HEADER: "div.grid-header",
+			HEADER_ROW: "div.grid-header thead:first>tr",
+			HEADER_ROW_GHOST: "div.grid-body thead:first>tr",
+			COLGROUP: "div.grid-body colgroup:first",
+			BODY_WRAPPER: "div.grid-body",
+			BODY: "div.grid-body tbody",
+			ITEM_ROW: "div.grid-body tbody>tr",
+			TREE_TOGGLER: "div.grid-body tbody>tr .grid-tree-toggler",
+			FOOTER: "div.grid-footer"
 		},
+		DATA_KEY = {
+			COLUMN: "kcuF_grid_column",// for each cell in header
+			ITEM: "kcuF_grid_item"// for each row in body
+		};
+	
+	function compareAsDate(str1, str2) {
+		var date1 = new Date(str1),
+			date2 = new Date(str2);
 		
-		_compareAsString: function(str1, str2) {
-			return str1 > str2 ? 1 : (str1 < str2 ? -1 : 0);// TODO better sort logic
+		return date1 > date2 ? 1 : (date1 < date2 ? -1 : 0);
+	}
+	
+	function compareAsNumber(str1, str2) {
+		var num1 = parseFloat(str1),
+			num2 = parseFloat(str2);
+		
+		if (isNaN(num1) && isNaN(num2)) {
+			return str1 > str2 ? 1 : (str1 < str2 ? -1 : 0);
+		} else if (isNaN(num1)) {
+			return -1;
+		} else if (isNaN(num2)) {
+			return 1;
+		} else {
+			return num1 > num2 ? 1 : (num1 < num2 ? -1 : 0);
+		}
+	}
+	function compareAsString(str1, str2) {
+		return str1 > str2 ? 1 : (str1 < str2 ? -1 : 0);// TODO better sort logic
+	}
+	
+	$.extend(GridItem.prototype, {
+		data: null,
+		level: 0,
+		parent: null,
+		children: null,
+		
+		_init: function(data) {
+			this.data = data;
 		}
 	});
+	
+	Grid.OPTS = OPTS;
 	
 	$.extend(Grid.prototype, /** @lends kcuF.ui.Grid.prototype */{
 		/**
@@ -263,14 +250,14 @@
 		 * @param {Object} opts Object for creating the options.
 		 */
 		_init: function(opts) {
-			var options = $.extend({}, Grid.OPTS, opts),
+			var options = $.extend({}, OPTS, opts),
 				ui = template.getAsDom$("Grid").appendTo(options.attachPoint);
 			
 			if (options.maxLines > 0 && options.minLines > options.maxLines) {
 				options.minLines = options.maxLines;
 			}
 			if (options.tree) {
-				options.tree = $.extend({}, Grid.OPTS_TREE, options.tree);
+				options.tree = $.extend({}, OPTS_TREE, options.tree);
 			}
 			
 			this._options = options;
@@ -283,7 +270,7 @@
 			
 			var columns = [];
 			$.each(options.columns || [], function(idx, itm) {
-				columns.push($.extend({}, Grid.DATA_COLUMN, itm, {
+				columns.push($.extend({}, DATA_COLUMN, itm, {
 					index: idx
 				}));
 			});
@@ -297,15 +284,15 @@
 		
 		_initUI: function(columns) {
 			var options = this._options,
-				headerRow = this._ui.find(Grid.QUERY_HEADER_ROW),
-				headerRowGhost = this._ui.find(Grid.QUERY_HEADER_ROW_GHOST),
-				colgroup = this._ui.find(Grid.QUERY_COLGROUP);
+				headerRow = this._ui.find(QUERY.HEADER_ROW),
+				headerRowGhost = this._ui.find(QUERY.HEADER_ROW_GHOST),
+				colgroup = this._ui.find(QUERY.COLGROUP);
 			
-			$.each(columns, function(idx, itm) {
-				var cell = $("<th></th>").appendTo(headerRow).data(Grid.DATAKEY_COLUMN, this),
+			$.each(columns, function(k) {
+				var cell = $("<th></th>").appendTo(headerRow).data(DATA_KEY.COLUMN, this),
 					cellGhost = $("<th></th>").appendTo(headerRowGhost);
 				
-				$("<col></col>").addClass(idx % 2 ? "grid-col-even" : "grid-col-odd").appendTo(colgroup);
+				$("<col></col>").addClass(k % 2 ? "grid-col-even" : "grid-col-odd").appendTo(colgroup);
 				
 				if (this.width > 0) {
 					cell.width(this.width);
@@ -317,7 +304,7 @@
 			});
 			
 			if (options.footer) {
-				this._ui.find(Grid.QUERY_FOOTER).show().html(options.footer);
+				this._ui.find(QUERY.FOOTER).show().html(options.footer);
 			}
 		},
 		
@@ -328,16 +315,16 @@
 			
 			this._ui.bind("click dblclick focusin focusout keydown", eventData, function(e) {
 				return e.data.instance._aioEventHandler(e);
-			}).delegate(Grid.QUERY_ITEM_ROW, "mouseenter", eventData, function(e) {
+			}).delegate(QUERY.ITEM_ROW, "mouseenter", eventData, function(e) {
 				return e.data.instance._aioEventHandler(e);
-			}).delegate(Grid.QUERY_BODY, "mouseleave", eventData, function(e) {
+			}).delegate(QUERY.BODY, "mouseleave", eventData, function(e) {
 				return e.data.instance._aioEventHandler(e);
 			});
 		},
 		
 		_aioEventHandler: function(e) {
 			var tgt = $(e.target);
-			if (tgt.is(Grid.QUERY_EDITBOX)) {
+			if (tgt.is(QUERY.EDITBOX)) {
 				return;
 			}
 			
@@ -346,37 +333,37 @@
 				options = this._options,
 				cell = tgt.is("tr") ? null : (tgt.is("th,td") ? tgt : tgt.parentsUntil("tr", "th,td")),// DONOT put a table inside a grid
 				row = cell ? cell.parent() : tgt,
-				item = row.data(Grid.DATAKEY_ITEM),
+				item = row.data(DATA_KEY.ITEM),
 				resetEdit = function(editNow) {
-					if (_this._editTimer_temp_) {
-						clearTimeout(_this._editTimer_temp_);
-						delete _this._editTimer_temp_;
+					if (_this._editTimerTemp) {
+						clearTimeout(_this._editTimerTemp);
+						delete _this._editTimerTemp;
 					}
 					if (editNow) {
 						_this._edit(cell, item);
 					}
 				},
 				resetHover = function() {
-					clearTimeout(_this._hoverTimer_temp_);
-					delete _this._hoverTimer_temp_;
+					clearTimeout(_this._hoverTimerTemp);
+					delete _this._hoverTimerTemp;
 				};
 			
 			switch (e.type) {
 			case "click":
 				resetEdit();
-				if (tgt.is(Grid.QUERY_TREE_TOGGLER)) {
+				if (tgt.is(QUERY.TREE_TOGGLER)) {
 					this._toggleFold(item, tgt);
 				}
 				if (item) {
 					if (row.hasClass("selected")) {
-						this._editTimer_temp_ = setTimeout(function() {
+						this._editTimerTemp = setTimeout(function() {
 							resetEdit(true);
 						}, this._options.editDelay);
 					} else {
 						this._select(row, e.ctrlKey, true);
 					}
 				} else {
-					var column = cell.data(Grid.DATAKEY_COLUMN);
+					var column = cell.data(DATA_KEY.COLUMN);
 					column.sortAscending = !column.sortAscending;
 					this._sort(cell.prevAll().length, column);
 				}
@@ -396,7 +383,7 @@
 			case "mouseenter":
 				resetHover();
 				if (item) {
-					this._hoverTimer_temp_ = setTimeout(function() {
+					this._hoverTimerTemp = setTimeout(function() {
 						var lastHover = _this.hovering;
 						if (lastHover) {
 							(options.onItemMouseLeave && options.onItemMouseLeave.call(_this, lastHover.item, lastHover.row, lastHover.cell));
@@ -430,13 +417,13 @@
 				case 38:// Up
 				case 40:// Down TODO donot use rowsmap
 					var rowsMap = this._getRowsMap(),
-						up = (e.keyCode == 38 && !e.shiftKey) || (e.keyCode == 40 && e.shiftKey),
+						up = (e.keyCode === 38 && !e.shiftKey) || (e.keyCode === 40 && e.shiftKey),
 						selIndex = -1,
 						selIndexAfter;
 					
-					rowsMap.real.each(function(i) {
+					rowsMap.real.each(function(k) {
 						if ($(this).hasClass("selected")) {
-							selIndex = i;
+							selIndex = k;
 							return false;
 						}
 					});
@@ -457,7 +444,7 @@
 						}
 					}
 					
-					if (selIndexAfter == selIndex || selIndexAfter < 0 || selIndexAfter > rowsMap.real.length - 1) {
+					if (selIndexAfter === selIndex || selIndexAfter < 0 || selIndexAfter > rowsMap.real.length - 1) {
 						return true;
 					}
 					
@@ -498,8 +485,8 @@
 		height: function(h) {
 			this._options.height = h;
 			
-			var bodyWrapper = this._ui.find(Grid.QUERY_BODY_WRAPPER),
-				bodyH = h - this._ui.find(Grid.QUERY_HEADER).outerHeight();
+			var bodyWrapper = this._ui.find(QUERY.BODY_WRAPPER),
+				bodyH = h - this._ui.find(QUERY.HEADER).outerHeight();
 			
 			if (bodyH < 0) {
 				return;
@@ -517,15 +504,14 @@
 		/**
 		 * Sort items for one column.
 		 * @param {String} sortBy The column key.
-		 * @param {Boolean} ascending
 		 */
-		sort: function(sortBy, ascending) {
+		sort: function(sortBy) {
 			var cellIndex,
 				column;
-			$.each(this._getColumns(), function(idx, itm) {
-				if (itm.key === sortBy) {
-					cellIndex = idx;
-					column = itm;
+			$.each(this._getColumns(), function(k, v) {
+				if (v.key === sortBy) {
+					cellIndex = k;
+					column = v;
 					return false;
 				}
 			});
@@ -553,7 +539,7 @@
 		get: function() {
 			var items = [];
 			this._filterRealRows(arguments).each(function() {
-				items.push($(this).data(Grid.DATAKEY_ITEM));
+				items.push($(this).data(DATA_KEY.ITEM));
 			});
 			
 			return items;
@@ -571,17 +557,17 @@
 			items = $.isArray(items) ? items : [items];
 			
 			function processItemsForTree(cItems, pItem) {
-				$.each(cItems, function(idx, itm) {
-					if (options.tree && !itm._tree_) {
-						itm._tree_ = {
+				$.each(cItems, function(k, v) {
+					if (options.tree && !v._tree_) {
+						v._tree_ = {
 							level: pItem ? (pItem._tree_.level + 1) : 0,
 							parent: pItem,
-							children: itm[options.tree.children]
+							children: v[options.tree.children]
 						};
-						if (itm._tree_.children) {
-							processItemsForTree(itm._tree_.children, itm);
+						if (v._tree_.children) {
+							processItemsForTree(v._tree_.children, v);
 						}
-						delete itm[options.tree.children];
+						delete v[options.tree.children];
 					}
 				});
 			}
@@ -636,7 +622,7 @@
 		update: function(updatedItem, updatedKeys) {
 			var _this = this,
 				rows = this._filterRealRows([function(item) {// actually we should have one row here
-					return item == updatedItem;
+					return item === updatedItem;
 				}]);
 			if (!rows.length) {
 				return;
@@ -645,8 +631,8 @@
 			var columns = this._getColumns(true);
 			rows.each(function() {
 				var cells = $(this).children();
-				$.each($.isArray(updatedKeys) ? updatedKeys : [updatedKeys], function(idx, key) {
-					var column = columns[key];
+				$.each($.isArray(updatedKeys) ? updatedKeys : [updatedKeys], function(k, v) {
+					var column = columns[v];
 					if (!column) {
 						return;
 					}
@@ -662,8 +648,8 @@
 		 */
 		_getColumns: function(asObj) {
 			var columns = asObj ? {} : [];
-			this._ui.find(Grid.QUERY_HEADER_ROW).children().each(function() {
-				var column = $(this).data(Grid.DATAKEY_COLUMN);
+			this._ui.find(QUERY.HEADER_ROW).children().each(function() {
+				var column = $(this).data(DATA_KEY.COLUMN);
 				if (asObj) {
 					columns[column.key] = column;
 				} else {
@@ -673,14 +659,14 @@
 			return columns;
 		},
 		/**
-		 * Get the coresponding column for cell.
+		 * Get the corresponding column for cell.
 		 * @param {JQNode} cell The td.
 		 */
 		_getColumn: function(cell) {
 			var cellIndex = -1;
-			cell.parent().children().each(function(idx, itm) {
-				if (this == cell[0]) {
-					cellIndex = idx;
+			cell.parent().children().each(function(k) {
+				if (this === cell[0]) {
+					cellIndex = k;
 					return false;
 				}
 			});
@@ -707,13 +693,13 @@
 				
 				switch (column.sortAs) {
 				case "date":
-					ascSortResult = Grid._compareAsDate(str1, str2);
+					ascSortResult = compareAsDate(str1, str2);
 					break;
 				case "number":
-					ascSortResult = Grid._compareAsNumber(str1, str2);
+					ascSortResult = compareAsNumber(str1, str2);
 					break;
 				default:
-					ascSortResult = Grid._compareAsString(str1, str2);
+					ascSortResult = compareAsString(str1, str2);
 					break;
 				}
 				
@@ -721,7 +707,7 @@
 			});
 			
 			var row = $(rows.splice(0, 1)),// splice returns array, this line is acctually shift
-				gridBody = this._ui.find(Grid.QUERY_BODY);
+				gridBody = this._ui.find(QUERY.BODY);
 			
 			row.prependTo(gridBody);
 			rows.each(function() {
@@ -743,12 +729,12 @@
 				var k = args[0],
 					v = args[1];
 				filterFn = function(item) {
-					return item[k] == v;
+					return item[k] === v;
 				};
 			}
 			
 			return this._getRowsMap().real.filter(function() {
-				return filterFn($(this).data(Grid.DATAKEY_ITEM));
+				return filterFn($(this).data(DATA_KEY.ITEM));
 			});
 		},
 		/**
@@ -760,17 +746,17 @@
 				options = this._options,
 				columns = this._getColumns(),
 				rowsMap = this._getRowsMap(),
-				gridBody = this._ui.find(Grid.QUERY_BODY),
-				bodyWrapper = this._ui.find(Grid.QUERY_BODY_WRAPPER),
+				gridBody = this._ui.find(QUERY.BODY),
+				bodyWrapper = this._ui.find(QUERY.BODY_WRAPPER),
 				toUnfold = [];
 			
 			var row = parentItem ? this._filterRealRows([function(item) {
-				return parentItem == item;
+				return parentItem === item;
 			}]) : gridBody.find("tr:last");
 			
-			$.each(items, function(i, item) {
+			$.each(items, function(k, v) {
 				var cells, newRow = false;
-				if (item && rowsMap.fill.length) {
+				if (v && rowsMap.fill.length) {
 					row = $(Array.prototype.shift.call(rowsMap.fill));
 				} else {
 					if (row.length) {
@@ -796,11 +782,11 @@
 				}
 				cells = row.children();
 				
-				if (item) {
+				if (v) {
 					rowsMap.real.push(row[0]);
-					row.data(Grid.DATAKEY_ITEM, item);
-					$.each(columns, function(idx, column) {
-						_this._fillCell($(cells[idx]), item, column);
+					row.data(DATA_KEY.ITEM, v);
+					$.each(columns, function(kk, vv) {
+						_this._fillCell($(cells[kk]), v, vv);
 					});
 				} else {
 					rowsMap.fill.push(row[0]);
@@ -816,9 +802,9 @@
 					}
 				}
 				
-				if (options.tree && options.tree.autoUnfold && item._tree_.children && item._tree_.children.length) {
-					if (options.tree.autoUnfold === true || ($.isFunction(options.tree.autoUnfold) && options.tree.autoUnfold(item) !== false)) {
-						toUnfold.push(item);
+				if (options.tree && options.tree.autoUnfold && v._tree_.children && v._tree_.children.length) {
+					if (options.tree.autoUnfold === true || ($.isFunction(options.tree.autoUnfold) && options.tree.autoUnfold(v) !== false)) {
+						toUnfold.push(v);
 					}
 				}
 			});
@@ -838,15 +824,15 @@
 				options = this._options,
 				rowsMap = this._getRowsMap(),
 				allLength = rowsMap.all.length,
-				gridBody = this._ui.find(Grid.QUERY_BODY),
-				bodyWrapper = this._ui.find(Grid.QUERY_BODY_WRAPPER);
+				gridBody = this._ui.find(QUERY.BODY),
+				bodyWrapper = this._ui.find(QUERY.BODY_WRAPPER);
 			
 			rows.each(function() {
 				var row = $(this),
-					item = row.data(Grid.DATAKEY_ITEM);
+					item = row.data(DATA_KEY.ITEM);
 				
 				if (options.minLines > 0 && allLength <= options.minLines) {
-					row.removeData(Grid.DATAKEY_ITEM).removeClass("selected").appendTo(gridBody).children().html("&nbsp;");
+					row.removeData(DATA_KEY.ITEM).removeClass("selected").appendTo(gridBody).children().html("&nbsp;");
 				} else {
 					row.remove();
 					allLength -= 1;
@@ -870,7 +856,7 @@
 		_toggleFold: function(item, toggler, cmd) {
 			var options = this._options;
 			toggler = toggler || this._filterRealRows([function(theItem) {
-				return theItem == item;
+				return theItem === item;
 			}]).find(".grid-tree-toggler:first");
 			if (!toggler.length || (toggler.hasClass("folded") && cmd === "fold") || (toggler.hasClass("unfolded")  && cmd === "unfold")) {
 				return;
@@ -884,7 +870,7 @@
 				this.remove(function(cItem) {
 					var pItem = cItem._tree_.parent;
 					while (pItem) {
-						if (pItem == item) {
+						if (pItem === item) {
 							return true;
 						}
 						
@@ -910,7 +896,7 @@
 		 */
 		_editInline: function(cell, item, column) {
 			var _this = this,
-				editBox = this._ui.children(Grid.QUERY_EDITBOX),
+				editBox = this._ui.children(QUERY.EDITBOX),
 				cellPos = cell.position();
 			if (!editBox.length) {
 				editBox = $("<input type=\"text\" class=\"grid-editbox\" />").appendTo(this._ui);
@@ -939,7 +925,7 @@
 				}
 				
 				var newVal = editBox.val();
-				if (action == "save" && item[column.key] != newVal) {
+				if (action === "save" && item[column.key] !== newVal) {
 					item[column.key] = newVal;
 					_this._fillCell(cell, item, column);
 					// TODO onItemUpdated
@@ -962,7 +948,7 @@
 			
 			rows.each(function() {
 				var row = $(this),
-					item = row.data(Grid.DATAKEY_ITEM),
+					item = row.data(DATA_KEY.ITEM),
 					selIndex = $.inArray(this, selectedRows);
 				
 				row.addClass("selected");
@@ -990,7 +976,7 @@
 				options = this._options;
 			rows.each(function() {
 				var row = $(this),
-					item = row.data(Grid.DATAKEY_ITEM);
+					item = row.data(DATA_KEY.ITEM);
 				
 				(options.onItemActivated && options.onItemActivated.call(_this, item, row));
 			});
@@ -1000,19 +986,19 @@
 		 * @returns {Object}
 		 */
 		_getRowsMap: function() {
-			var rows = this._ui.find(Grid.QUERY_ITEM_ROW);
+			var rows = this._ui.find(QUERY.ITEM_ROW);
 			
 			return {
 				all: rows,
 				selected: rows.filter(".selected"),
 				idle: rows.not(".selected").filter(function() {
-					return !!$(this).data(Grid.DATAKEY_ITEM);
+					return !!$(this).data(DATA_KEY.ITEM);
 				}),
 				real: rows.filter(function() {
-					return !!$(this).data(Grid.DATAKEY_ITEM);
+					return !!$(this).data(DATA_KEY.ITEM);
 				}),
 				fill: rows.filter(function() {
-					return !$(this).data(Grid.DATAKEY_ITEM);
+					return !$(this).data(DATA_KEY.ITEM);
 				})
 			};
 		},

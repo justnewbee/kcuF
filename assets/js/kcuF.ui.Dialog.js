@@ -415,12 +415,12 @@
 			if (options.buttons && $.isArray(options.buttons) && options.buttons.length) {
 				$footer.show();
 				var dfltBtn = "";
-				$.each(options.buttons, function(idx, itm) {
+				$.each(options.buttons, function(k, v) {
 					var btnData = $.extend({
-						index: idx// the dom structure may mess with the real index of button, we have to put a index here
-					}, DATA_BUTTON, itm);
+						index: k// the dom structure may mess with the real index of button, we have to put a index here
+					}, DATA_BUTTON, v);
 					
-					var $btn = $(itm.realButton ? "<button></button>" : "<a class=\"kcuF-button\" href=\"javascript:void(0);\"></a>").data(DATA_KEYS.BUTTON_OPTS, btnData).bind("click", {
+					var $btn = $(v.realButton ? "<button></button>" : "<a class=\"kcuF-button\" href=\"javascript:void(0);\"></a>").data(DATA_KEYS.BUTTON_OPTS, btnData).bind("click", {
 						dialog: dlg
 					}, function(e) {
 						e.data.dialog._handleOperation($(this));

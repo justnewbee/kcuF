@@ -1,4 +1,6 @@
 (function(window, $) {
+	"use strict";
+	
 	var kcuF = /** @lends kcuF */{
 		$: $,
 		_instances: [],
