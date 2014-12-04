@@ -1,0 +1,49 @@
+// config
+
+@G-color-base: #333;
+@G-color-link: #1ABC9C;
+@G-color-link-h: #16a085;
+
+// color swatches
+@G-color-gray: #95A5A6;
+@G-color-gray-light: #BDC3C7;
+
+@G-color-brand-primary: #34495E;
+@G-color-brand-secondary: #1ABC9C;
+@G-color-brand-success: #2ECC71;
+@G-color-brand-warning: #F1C40F;
+@G-color-brand-danger: #E74C3C;
+@G-color-brand-info: #3498DB;
+
+@G-color-social-pinterest: #CB2028;
+@G-color-social-linkedin: #0072B5;
+@G-color-social-stumbleupon: #ED4A13;
+@G-color-social-googleplus: #2D2D2D;
+@G-color-social-facebook: #2F4B93;
+@G-color-social-twitter: #00BDEF;
+
+// font-weight
+@G-font-weight-light: 300;
+@G-font-weight-normal: 400;
+@G-font-weight-semibold: 600;
+@G-font-weight-bold: 700;
+
+// radius
+@G-border-radius-s: 3px;
+@G-border-radius: 4px;
+@G-border-radius-l: 6px;
+
+// util
+.opacity(@opacity) {
+	opacity: @opacity;
+	// IE8 filter
+	@opacity-ie: (@opacity * 100);
+	filter: ~"alpha(opacity=@{opacity-ie})";
+}
+
+.border-radius(@radius: @G-border-radius) {
+		-moz-border-radius: @radius;
+		-webkit-border-radius: @radius;
+		-ms-border-radius: @radius;
+	border-radius: @radius;
+}

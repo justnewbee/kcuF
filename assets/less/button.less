@@ -1,0 +1,155 @@
+@import "_mixin";
+
+.nb-btn {
+	@font-size: 15px;
+	@font-size-xs: ceil((@font-size * 0.8));// ~12px
+	@font-size-s: floor((@font-size * 0.867));// ~13px
+	@font-size-l: ceil((@font-size * 1.133));// ~17px
+	@font-size-xl: floor((@font-size * 1.467));// ~22px
+	
+	@line-height: 1.4;// ~21px
+	@line-height-xs: 1.083;// ~13px
+	@line-height-s: 1.385;// ~16px
+	@line-height-l: 1.471;// ~25px
+	@line-height-xl: 1.227;// ~27px
+	
+	@color: #FFF;
+	@bgc-default: @G-color-gray-light;
+	
+	@bgc-hover: mix(@G-color-gray-light, #FFF, 80%);
+	@bgc-active: mix(@G-color-gray-light, #000, 85%);
+	
+	@bgc-hover-primary: mix(@G-color-brand-secondary, #FFF, 80%);
+	@bgc-active-primary: mix(@G-color-brand-secondary, #000, 85%);
+	
+	@bgc-hover-info: mix(@G-color-brand-info, #FFF, 80%);
+	@bgc-active-info: mix(@G-color-brand-info, #000, 85%);
+	
+	@bgc-hover-success: mix(@G-color-brand-success, #FFF, 80%);
+	@bgc-active-success: mix(@G-color-brand-success, #000, 85%);
+	
+	@bgc-hover-danger: mix(@G-color-brand-danger, white, 80%);
+	@bgc-active-danger: mix(@G-color-brand-danger, #000, 85%);
+	
+	@bgc-hover-warning: overlay(@G-color-brand-warning, darken(#FFF, 37.5%));
+	@bgc-active-warning: mix(@G-color-brand-warning, #000, 85%);
+	
+	@bgc-hover-inverse: overlay(@G-color-brand-primary, darken(#FFF, 37.5%));
+	@bgc-active-inverse: mix(@G-color-brand-primary, #000, 85%);
+	
+	.button-colors(@c; @bgc; @bgc-h; @bgc-a) {
+		color: @c;
+		background-color: @bgc;
+		
+		&:hover,
+		&.status-hover,
+		&:focus,
+		&.status-focus,
+		&:active,
+		&.status-active {
+			color: @c;
+			background-color: @bgc-h;
+			border-color: @bgc-h;
+		}
+		&:active,
+		&.status-active {
+			background: @bgc-a;
+			border-color: @bgc-a;
+		}
+	}
+	
+	.button-size(@pd-v; @pd-h; @fs; @lh; @br: @G-border-radius) {
+		padding: @pd-v @pd-h;
+		font-size: @fs;
+		line-height: @lh;
+		.border-radius(@br);
+	}
+	
+	border: none;
+	font-weight: @G-font-weight-normal;
+	line-height: @line-height;
+	-webkit-font-smoothing: subpixel-antialiased;
+	transition: border .25s linear, color .25s linear, background-color .25s linear;
+	cursor: pointer;
+	outline: none;// we have focus style, sot remove it is ok
+	
+	// types and statuses
+	.button-colors(@color, @bgc-default, @bgc-hover, @bgc-active);
+	&.type-primary {
+		.button-colors(@color, @G-color-brand-secondary, @bgc-hover-primary, @bgc-active-primary);
+	}
+	&.type-info {
+		.button-colors(@color, @G-color-brand-info, @bgc-hover-info, @bgc-active-info);
+	}
+	
+	&.type-warning {
+		.button-colors(@color, @G-color-brand-warning, @bgc-hover-warning, @bgc-active-warning);
+	}
+	&.type-danger {
+		.button-colors(@color, @G-color-brand-danger, @bgc-hover-danger, @bgc-active-danger);
+	}
+	&.type-success {
+		.button-colors(@color, @G-color-brand-success, @bgc-hover-success, @bgc-active-success);
+	}
+	&.type-inverse {
+		.button-colors(@color, @G-color-brand-primary, @bgc-hover-inverse, @bgc-active-inverse);
+	}
+	
+	&[disabled],
+	&.status-disabled {
+		&,
+		&:hover,
+		&.status-hover,
+		&:focus,
+		&.status-focus,
+		&:active,
+		&.status-active {
+			background-color: @G-color-gray-light;
+			border-color: @G-color-gray-light;
+			color: fade(@color, 75%);
+			cursor: not-allowed;
+			.opacity(.7);
+		}
+	}
+	
+	// sizes
+	.button-size(10px, 15px, @font-size, @line-height, @G-border-radius);
+	&.size-xl {
+		.button-size(13px, 20px, @font-size-xl, @line-height-xl, @G-border-radius-l);
+	}
+	&.size-l {
+		.button-size(10px, 19px, @font-size-l, @line-height-l, @G-border-radius-l);
+	}
+	&.size-s {
+		.button-size(9px, 13px, @font-size-s, @line-height-s, @G-border-radius);
+	}
+	&.size-xs {
+		.button-size(6px, 9px, @font-size-xs, @line-height-xs, @G-border-radius-s);
+	}
+	
+	// other alternatives
+	&.alt-embossed {
+		box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.15);
+		
+		&.status-active,
+		&:active {
+			box-shadow: inset 0 2px 0 rgba(0, 0, 0, 0.15);
+		}
+	}
+	&.alt-link {
+		&:hover,
+		&:focus {
+			color: @G-color-link-h;
+			text-decoration: underline;
+			background-color: transparent;
+		}
+		&[disabled],
+		fieldset[disabled] & {
+			&:hover,
+			&:focus {
+				color: @G-color-gray-light;
+				text-decoration: none;
+			}
+		}
+	}
+}
