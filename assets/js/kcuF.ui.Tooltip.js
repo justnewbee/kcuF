@@ -178,13 +178,13 @@
 		 * @param {Object} opts Object of options, see {@link kcuF.ui.Tooltip.OPTS}.
 		 * @type void
 		 */
-		_init: function(nd, opts) {
+		_ctor: function(nd, opts) {
 			var node = $(nd),
 				options = $.extend({}, Tooltip.OPTS, opts),
 				instance = node.data(Tooltip.DATA_KEY);
 			
 			if (instance) {
-				if (options.cmd == "destroy") {
+				if (options.cmd === "destroy") {
 					instance._destroy();
 				} else {// update
 					$.extend(instance._options, opts);

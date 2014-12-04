@@ -116,7 +116,7 @@
 		_options: null,
 		_ui: null,
 		
-		_init: function(opts) {
+		_ctor: function(opts) {
 			this._options = $.extend({}, Menu.OPTS, opts);
 			this.bindToggler(this._options.toggler);
 		},

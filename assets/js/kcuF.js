@@ -22,8 +22,8 @@
 				p = paths.shift(),
 				create = function() {
 					return (/^_*[A-Z]/.test(p) && p.toUpperCase() !== p) ? function() {
-						if (this._init) {
-							this._init.apply(this, arguments);
+						if (this._ctor) {
+							this._ctor.apply(this, arguments);
 						}
 					} : {};
 				};

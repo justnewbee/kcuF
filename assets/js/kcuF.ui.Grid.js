@@ -226,7 +226,7 @@
 		parent: null,
 		children: null,
 		
-		_init: function(data) {
+		_ctor: function(data) {
 			this.data = data;
 		}
 	});
@@ -249,7 +249,7 @@
 		 * Initialization of Grid.
 		 * @param {Object} opts Object for creating the options.
 		 */
-		_init: function(opts) {
+		_ctor: function(opts) {
 			var options = $.extend({}, OPTS, opts),
 				ui = template.getAsDom$("Grid").appendTo(options.attachPoint);
 			

@@ -379,7 +379,7 @@
 		 * Initialize dialog with options.
 		 * @param {Object} opts
 		 */
-		_init: function(opts) {
+		_ctor: function(opts) {
 			var options = $.extend({}, OPTS, opts),
 				$wrapper = doWrapper(options.modal),
 				$ui = template.getAsDom$("Dialog", {
@@ -488,7 +488,7 @@
 		
 		/* private(s) */
 		_close: function() {
-			if (!this._ui.parent().length) {// you cannot close twice
+			if (!this._ui.parent().length) {// you cannot close twice FIXME IE has problem
 				return;
 			}
 			
