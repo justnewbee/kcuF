@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<title>nb-form and form control</title>
+<link rel="stylesheet/less" href="../../assets/less/base.less" />
+<link rel="stylesheet/less" href="../../assets/less/form.less" />
+<style>
+.demo {
+	margin-bottom: 1em;
+}
+.demo .demo-ctrl {
+	margin-bottom: 0.5em;
+}
+.demo .demo-rslt > * {
+	margin: 2px;
+}
+</style>
+<script src="../../assets/vendor/es5-shim-4.0.3.js"></script>
+<script src="../../assets/vendor/less-1.7.5.js"></script>
+<script src="../../assets/vendor/jquery-1.7.2.js"></script>
+<script>
+$(function() {
+	var $bd = $("body"),
+		demos = [{
+			id: "demo-buttons",
+			title: "the button class - .nb-btn",
+			variations: [{
+				name: "types",
+				values: ["type-default", "type-primary", "type-info", "type-warning", "type-danger", "type-success", "type-inverse"]
+			}, {
+				name: "sizes",
+				values: ["size-xs", "size-s", "size-m", "size-l", "size-xl"]
+			}, {
+				name: "statuses",
+				values: ["status-hover", "status-focus", "status-active", "status-disabled"]
+			}, {
+				name: "alts",
+				values: ["alt-flat", "alt-link"]
+			}],
+			baseHtml: function() {
+				return ["button", "input", "a", "div", "span"].map(function(v) {
+					switch (v) {
+					case "button":
+						return "<button class=\"nb-btn\">button</button>";
+					case "input":
+						return "<input class=\"nb-btn\" type=\"button\" value=\"input[type=button]\" />";
+					case "a":
+						return "<a class=\"nb-btn\" href=\"javascript:;\">a</a>";
+					default:
+						return "<" + v + " class=\"nb-btn\" tabindex=\"0\">" + v + "</" + v + ">";
+					}
+				}).join(" ");
+			}
+		}, {
+			id: "demo-inputs",
+			title: "form control - input",
+			mains: ["input"],
+			variations: [{
+				name: "sizes",
+				values: ["size-xs", "size-s", "size-m", "size-l", "size-xl"]
+			}, {
+				name: "statuses",
+				values: ["status-warning", "status-success", "status-error", "status-disabled", "status-readonly"]
+			}, {
+				name: "alts",
+				values: ["alt-flat"]
+			}],
+			baseHtml: function() {
+				return ["button", "input", "select", "div", "textarea"].map(function(v) {
+					switch (v) {
+					case "button":
+						return "<button class=\"nb-btn\">button for ref</button>";
+					case "input":
+						return "<input type=\"text\" class=\"nb-form-ctrl\" placeholder=\"placeholder for the input\" />";
+					case "select":
+						return ["<select class=\"nb-form-ctrl\">",
+							"<option value=\"\">(empty)</option>",
+							"<option value=\"value 1\">value 1</option>",
+						"</select>"].join("");
+					case "textarea":
+						return "<textarea class=\"nb-form-ctrl\" placeholder=\"placeholder for the textarea\"></textarea>";
+					default:
+						return "<div class=\"nb-form-ctrl\" contenteditable></div>";
+					}
+				}).join(" ");
+			}
+		}];
+	
+	function setupDemo(conf) {
+		var $demo = $(["<div class=\"demo\">",
+			"<h2>", conf.title, "</h2>",
+			"<div class=\"demo-ctrl\"></div>",
+			"<div class=\"demo-rslt\"></div>",
+		"</div>"].join("")).attr("id", conf.id).appendTo($bd);
+		
+		$demo.find(".demo-ctrl").append(conf.variations.map(function(v) {
+			return ["<div class=\"variation\" data-variations=\"" + v.values.join(" ") + "\">",
+				v.name + ": ",
+				"<label><input type=\"radio\" name=\"" + (conf.id + "-" + v.name) + "\" value=\"\">(default)</label>",
+				v.values.map(function(vv) {
+					return "<label><input type=\"radio\" name=\"" + (conf.id + "-" + v.name) + "\" value=\"" + vv + "\"> " + vv + "</label>";
+				}).join(""),
+			"</div>"].join("");
+		}).join(" "));
+		
+		
+		$demo.find(".demo-rslt").append(conf.baseHtml());
+	}
+	
+	demos.forEach(setupDemo);
+	
+	// set up events
+	$bd.delegate(".demo-ctrl input", "change", function() {
+		var $me = $(this),
+			$variation = $me.closest(".variation"),
+			$demo = $variation.closest(".demo"),
+			variationClassAll = $variation.data("variations");
+		
+		$demo.find(".demo-rslt").children().removeClass(variationClassAll).addClass($me.val());
+	});
+});
+</script>
+</head>
+<body>
+<h1>button and input are all form controls</h1>
+</body>
+</html>
