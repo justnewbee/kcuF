@@ -41,7 +41,7 @@
 }
 
 html, body {
-	font: 400 16px/1.5 "OpenSans", "Helvetica Neue", Calibri, Helvetica, Arial, sans-serif;
+	font: 400 16px/1.5 @G-font-family;
 	color: @G-color-base;
 }
 
@@ -63,4 +63,15 @@ a {
 	&:focus {
 		color: @G-color-link-h;
 	}
+}
+
+::-moz-placeholder {// Firefox
+	.placeholder-style();
+	opacity: 1;
+}
+:-ms-input-placeholder {// Internet Explorer 10+ See https://github.com/twbs/bootstrap/pull/11526
+	.placeholder-style();
+}
+::-webkit-input-placeholder {// Safari and Chrome
+	.placeholder-style();
 }

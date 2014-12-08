@@ -22,16 +22,22 @@
 @G-color-social-facebook: #2F4B93;
 @G-color-social-twitter: #00BDEF;
 
-// font-weight
-@G-font-weight-light: 300;
-@G-font-weight-normal: 400;
-@G-font-weight-semibold: 600;
+// font
+@G-font-family: "OpenSans", "Helvetica Neue", Calibri, Helvetica, Arial, sans-serif;
+
+@G-font-size-component: 15px;
+
 @G-font-weight-bold: 700;
+@G-font-weight-semibold: 600;
+@G-font-weight-normal: 400;
+@G-font-weight-light: 300;
 
 // radius
-@G-border-radius-s: 3px;
-@G-border-radius: 4px;
+@G-border-radius-xl: 8px;
 @G-border-radius-l: 6px;
+@G-border-radius: 4px;
+@G-border-radius-s: 3px;
+@G-border-radius-xs: 2px;
 
 // util
 .opacity(@opacity) {
@@ -41,9 +47,22 @@
 	filter: ~"alpha(opacity=@{opacity-ie})";
 }
 
+.placeholder-style(@color: @G-color-gray) {
+	font-weight: @G-font-weight-light;
+	font-style: italic;
+	font-family: @G-font-family;
+	color: @color;
+}
+
 .border-radius(@radius: @G-border-radius) {
 		-moz-border-radius: @radius;
 		-webkit-border-radius: @radius;
 		-ms-border-radius: @radius;
 	border-radius: @radius;
+}
+
+.box-sizing(@type: border-box) {
+		-webkit-box-sizing: @type;
+		-moz-box-sizing: @type;
+	box-sizing: @type;
 }
