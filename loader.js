@@ -11,9 +11,7 @@
 		},
 		CSS_JS: [
 			// --- css --- //
-			"assets/css/normalize.css",
-			"assets/css/base.css",
-			"assets/css/button.css",
+			"assets/css/common.css",
 			"assets/css/menu.css",
 			"assets/css/grid.css",
 			"assets/css/dialog.css",

@@ -8,7 +8,7 @@
 		js: ["assets/js/kcuF.ui.Dialog.js"],
 		css: ["assets/css/dialog.css"],
 		requiredJs: ["assets/vendor/jquery.ui.core.js", "assets/vendor/jquery.ui.widget.js", "assets/vendor/jquery.ui.mouse.js", "assets/vendor/jquery.ui.draggable.js"],
-		requiredCss: ["assets/css/button.css"],
+		requiredCss: ["assets/css/common.css"],// TODO only button is needed
 		optsExt: {
 			title: {
 				val: "dialog title"

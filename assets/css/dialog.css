@@ -1,94 +1,81 @@
-div#kcuF-dialog-overlay {
-	position: fixed;
-	top: 0;
-	left: 0;
-	background-color: #FFF;
-	filter: alpha(opacity=60);
-	opacity: 0.6;
-	z-index: 999;
-	/* IE6 fixed position Hack */
-	_position: absolute;
-	_top: expression(documentElement.scrollTop + documentElement.clientHeight - this.offsetHeight);
+#kcuF-dialog-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: #FFF;
+  filter: alpha(opacity=60);
+  opacity: 0.6;
+  z-index: 999;
+  /* IE6 fixed position Hack */
+  _position: absolute;
+  _top: expression(documentElement.scrollTop + documentElement.clientHeight - this.offsetHeight);
 }
-div.kcuF-dialog-wrapper {
-	position: absolute;
-	top: 0;
-	left: 0;
-	z-index: 1000;
-	overflow: hidden;
+.kcuF-dialog-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  overflow: hidden;
 }
-div.kcuF-dialog {
-	position: absolute;
-	outline: none;
-	top: -9999px;
-	width: 500px;
-	min-width: 100px;
-	background-color: #FFF;
-	border-radius: 5px;
-		-moz-border-radius: 5px;
-		-webkit-border-radius: 5px;
-	box-shadow: 1px 1px 5px #999;
-		-moz-box-shadow: 1px 1px 5px #999;
-		-webkit-box-shadow: 1px 1px 5px #999;
+.kcuF-dialog {
+  position: absolute;
+  outline: none;
+  top: -9999px;
+  width: 500px;
+  min-width: 100px;
+  background-color: #FFF;
+  box-shadow: 1px 1px 5px #999;
+  -moz-box-shadow: 1px 1px 5px #999;
+  -webkit-box-shadow: 1px 1px 5px #999;
 }
-div.kcuF-dialog div.dlg-header {
-	position: relative;
-	background: #EEE;
-		background: -moz-linear-gradient(top, #F0F0F0, #DDD);
-		background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#F0F0F0), to(#DDD));
-		filter: progid:DXImageTransform.Microsoft.Gradient(gradientType=0, startColorStr=#F0F0F0, endColorStr=#DDD);
-	border-top-left-radius: 5px;
-		-moz-border-radius-topleft: 5px;
-		-webkit-border-top-left-radius: 5px;
-	border-top-right-radius: 5px;
-		-moz-border-radius-topright: 5px;
-		-webkit-border-top-right-radius: 5px;
+.kcuF-dialog .dlg-header {
+  position: relative;
+  background: #EEE;
 }
-div.kcuF-dialog div.dlg-header h4.dlg-title {
-	height: 28px;
-	line-height: 28px;
-	margin: 0 24px 0 8px;
-	cursor: default;
-	overflow: hidden;
-	white-space: nowrap;
-	text-overflow: ellipsis;
-		-o-text-overflow: ellipsis;
+.kcuF-dialog .dlg-header h4.dlg-title {
+  font-size: 12px;
+  height: 28px;
+  line-height: 28px;
+  margin: 0 24px 0 8px;
+  cursor: default;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  -o-text-overflow: ellipsis;
 }
-div.kcuF-dialog div.dlg-header a.dlg-close {
-	position: absolute;
-	top: 8px;
-	right: 8px;
-	width: 12px;
-	height: 12px;
-	text-align: center;
-	vertical-align: middle;
+.kcuF-dialog .dlg-header .dlg-close {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 12px;
+  height: 12px;
+  text-align: center;
+  vertical-align: middle;
 }
-div.kcuF-dialog div.dlg-body {
-	padding: 10px;
+.kcuF-dialog .dlg-body {
+  padding: 10px;
 }
-div.kcuF-dialog div.dlg-body div.dlg-footer {
-	padding-top: 10px;
+.kcuF-dialog .dlg-footer {
+  padding-top: 10px;
 }
-div.kcuF-dialog div.dlg-body div.dlg-footer:after {/* clearfix */
-	content: ".";
-	display: block;
-	height: 0;
-	clear: both;
-	visibility: hidden;
+.kcuF-dialog .dlg-footer:after {
+  content: ".";
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
 }
-* html div.kcuF-dialog div.dlg-body div.dlg-footer {/* IE6 clearfix */
-	height: 1%;
+* html .kcuF-dialog .dlg-footer {
+  height: 1%;
 }
-*+html div.kcuF-dialog div.dlg-body div.dlg-footer {/* IE7 clearfix */
-	min-height: 1px;
+* + html .kcuF-dialog .dlg-footer {
+  min-height: 1px;
 }
-div.kcuF-dialog div.dlg-body div.dlg-footer button,
-div.kcuF-dialog div.dlg-body div.dlg-footer a.kcuF-button {
-	float: right;
-	margin: 0 0 0 4px;
+.kcuF-dialog .dlg-footer .nb-btn {
+  float: right;
+  margin: 0 0 0 4px;
 }
-div.kcuF-dialog div.dlg-body div.dlg-footer button.left,
-div.kcuF-dialog div.dlg-body div.dlg-footer a.kcuF-button.left {
-	float: left;
-	margin: 0 4px 0 0;
+.kcuF-dialog .dlg-footer .nb-btn.left {
+  float: left;
+  margin: 0 4px 0 0;
 }

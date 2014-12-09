@@ -178,13 +178,14 @@
 			DIALOG_BODY: "div.dlg-body",
 			DIALOG_CONTENT: "div.dlg-content",
 			DIALOG_FOOTER: "div.dlg-footer",
-			DIALOG_BUTTON: "div.dlg-footer>button,div.dlg-footer>a.kcuF-button"
+			DIALOG_BUTTON: "div.dlg-footer>button,div.dlg-footer>a.nb-btn"
 		},
 		DATA_KEYS = {
 			INSTANCE: "nb_dialog_instance",
 			BUTTON_OPTS: "nb_dialog_button_opts",
 			WRAPPER_ZINDEX: "nb_dialog_wrapper_zindex"
-		};
+		},
+		BUTTON_DEFAULT_CLASS_X = "type-primary";
 	
 	function doOverlay() {
 		// get the unique overlay node for Dialog class, if no create one.
@@ -420,7 +421,7 @@
 						index: k// the dom structure may mess with the real index of button, we have to put a index here
 					}, DATA_BUTTON, v);
 					
-					var $btn = $(v.realButton ? "<button></button>" : "<a class=\"kcuF-button\" href=\"javascript:void(0);\"></a>").data(DATA_KEYS.BUTTON_OPTS, btnData).bind("click", {
+					var $btn = $(v.realButton ? "<button></button>" : "<a class=\"nb-btn\" href=\"javascript:void(0);\"></a>").data(DATA_KEYS.BUTTON_OPTS, btnData).bind("click", {
 						dialog: dlg
 					}, function(e) {
 						e.data.dialog._handleOperation($(this));
@@ -443,7 +444,7 @@
 					
 					if (btnData.defaultButton && !dfltBtn) {
 						dfltBtn = $btn;
-						$btn.addClass("green");
+						$btn.addClass(BUTTON_DEFAULT_CLASS_X);
 					}
 				});
 			} else {
@@ -623,7 +624,7 @@
 						}
 					}
 					return this;
-				} else if (typeof args[0] == "string") {// getter
+				} else if (typeof args[0] === "string") {// getter
 					return data[args[0]] === undefined ? "" : data[args[0]];
 				} else {// setter by object
 					$.extend(data, args[0]);
@@ -703,9 +704,9 @@
 					}
 				}
 				
-				if (btnOpts.defaultButton === true && !$btn.hasClass("green")) {// TODO not green
-					this._ui.find("div.dlg-footer>button.green,div.dlg-footer>a.kcuF-button.green,").removeClass("green");
-					$btn.addClass("green");
+				if (btnOpts.defaultButton === true && !$btn.hasClass(BUTTON_DEFAULT_CLASS_X)) {
+					this._ui.find("div.dlg-footer>." + BUTTON_DEFAULT_CLASS_X).removeClass(BUTTON_DEFAULT_CLASS_X);
+					$btn.addClass(BUTTON_DEFAULT_CLASS_X);
 				}
 				
 				$.extend($btn.data(DATA_KEYS.BUTTON_OPTS), btnOpts);
