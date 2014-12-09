@@ -75,3 +75,109 @@ a {
 ::-webkit-input-placeholder {// Safari and Chrome
 	.placeholder-style();
 }
+
+@-webkit-keyframes ani-nb-loading {
+	0% {
+		background: #E74C3C;
+		-webkit-transform: rotate(0deg);
+		border-radius: 10px;
+	}
+	50% {
+		background: #EBEDEE;
+		-webkit-transform: rotate(180deg);
+		border-radius: 0;
+	}
+	100% {
+		background: #E74C3C;
+		-webkit-transform: rotate(360deg);
+		border-radius: 10px;
+	}
+}
+@-moz-keyframes ani-nb-loading {
+	0% {
+		background: #E74C3C;
+		-moz-transform: rotate(0deg);
+		border-radius: 10px;
+	}
+	50% {
+		background: #EBEDEE;
+		-moz-transform: rotate(180deg);
+		border-radius: 0;
+	}
+	100% {
+		background: #E74C3C;
+		-moz-transform: rotate(360deg);
+		border-radius: 10px;
+	}
+}
+@-ms-keyframes ani-nb-loading {
+	0% {
+		background: #E74C3C;
+		-ms-transform: rotate(0deg);
+		border-radius: 10px;
+	}
+	50% {
+		background: #EBEDEE;
+		-ms-transform: rotate(180deg);
+		border-radius: 0;
+	}
+	100% {
+		background: #E74C3C;
+		-ms-transform: rotate(360deg);
+		border-radius: 10px;
+	}
+}
+@-o-keyframes ani-nb-loading {
+	0% {
+		background: #E74C3C;
+		-o-transform: rotate(0deg);
+		border-radius: 10px;
+	}
+	50% {
+		background: #EBEDEE;
+		-o-transform: rotate(180deg);
+		border-radius: 0;
+	}
+	100% {
+		background: #E74C3C;
+		-o-transform: rotate(360deg);
+		border-radius: 10px;
+	}
+}
+@keyframes ani-nb-loading {
+	0% {
+		background: #E74C3C;
+		transform: rotate(0deg);
+		border-radius: 10px;
+	}
+	50% {
+		background: #EBEDEE;
+		transform: rotate(180deg);
+		border-radius: 0;
+	}
+	100% {
+		background: #E74C3C;
+		transform: rotate(360deg);
+		border-radius: 10px;
+	}
+}
+
+.nb-loading {
+	@size: 16px;
+	
+	border-radius: 10px;
+	height: @size;
+	width: @size;
+	background: #EBEDEE;
+	display: inline-block;
+		-webkit-animation: ani-nb-loading 1.5s ease infinite;
+		-moz-animation: ani-nb-loading 1.5s ease infinite;
+		-ms-animation: ani-nb-loading 1.5s ease infinite;
+		-o-animation: ani-nb-loading 1.5s ease infinite;
+	animation: ani-nb-loading 1.5s ease infinite;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	margin-left: -(@size / 2);
+	margin-top: -(@size / 2);
+}
