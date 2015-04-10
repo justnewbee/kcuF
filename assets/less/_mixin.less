@@ -1,54 +1,4 @@
-// config
-
-@G-color-base: #333;
-@G-color-link: #1ABC9C;
-@G-color-link-h: #16a085;
-
-// color swatches
-@G-color-gray: #95A5A6;
-@G-color-gray-light: #BDC3C7;
-
-@G-color-brand-primary: #34495E;
-@G-color-brand-secondary: #1ABC9C;
-@G-color-brand-success: #2ECC71;
-@G-color-brand-warning: #F1C40F;
-@G-color-brand-danger: #E74C3C;
-@G-color-brand-info: #3498DB;
-
-@G-color-social-pinterest: #CB2028;
-@G-color-social-linkedin: #0072B5;
-@G-color-social-stumbleupon: #ED4A13;
-@G-color-social-googleplus: #2D2D2D;
-@G-color-social-facebook: #2F4B93;
-@G-color-social-twitter: #00BDEF;
-
-// font
-@G-font-family: "OpenSans", "Helvetica Neue", Calibri, Helvetica, Arial, sans-serif;
-
-@G-font-size-base: 18px;
-@G-font-size-component: 15px;
-
-@G-font-size-h1: floor((@G-font-size-base * 3.444));  // ~62px
-@G-font-size-h2: ceil((@G-font-size-base * 2.889));  // ~52px
-@G-font-size-h3: ceil((@G-font-size-base * 2.222));  // ~40px
-@G-font-size-h4: ceil((@G-font-size-base * 1.611));  // ~29px
-@G-font-size-h5: floor((@G-font-size-base * 1.556));  // ~28px
-@G-font-size-h6: ceil((@G-font-size-base * 1.333));  // ~24px
-
-@G-font-weight-bold: 700;
-@G-font-weight-semibold: 600;
-@G-font-weight-normal: 400;
-@G-font-weight-light: 300;
-
-@G-line-height-base: 1.72222;// 31/18
-@G-line-height-computed: floor((@G-font-size-base * @G-line-height-base));// ~31px
-
-// radius
-@G-border-radius-xl: 8px;
-@G-border-radius-l: 6px;
-@G-border-radius: 4px;
-@G-border-radius-s: 3px;
-@G-border-radius-xs: 2px;
+@import "_vars";
 
 // util
 .opacity(@opacity) {
@@ -58,14 +8,14 @@
 	filter: ~"alpha(opacity=@{opacity-ie})";
 }
 
-.placeholder-style(@color: @G-color-gray) {
-	font-weight: @G-font-weight-light;
+.placeholder-style(@color: @G_color_gray) {
+	font-weight: @G_font_weight_light;
 	font-style: italic;
-	font-family: @G-font-family;
+	font-family: @G_font_family;
 	color: @color;
 }
 
-.border-radius(@radius: @G-border-radius) {
+.border-radius(@radius: @G_border_radius) {
 		-moz-border-radius: @radius;
 		-webkit-border-radius: @radius;
 		-ms-border-radius: @radius;

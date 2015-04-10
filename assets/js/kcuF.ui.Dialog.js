@@ -331,7 +331,6 @@
 	}
 	/**
 	 * Resize handler for window, for re-positioning top-most Dialog instance.
-	 * @param {Event} e
 	 */
 	function __resizeHandler__() {
 		var topMostDlg = __findTopMostDialog__();
@@ -344,7 +343,6 @@
 	}
 	/**
 	 * Scroll handler for window, for re-positioning top-most Dialog instance.
-	 * @param {Event} e
 	 */
 	function __scrollHandler__() {
 		var topMostDlg = __findTopMostDialog__();
@@ -408,7 +406,6 @@
 			this._options = options;
 			this._ui = $ui;
 			this._wrapper = $wrapper;
-			
 			this._update();
 			
 			var dlg = this,

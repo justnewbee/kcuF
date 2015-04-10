@@ -9,22 +9,22 @@
 
 h1, h2, h3, h4, h5, h6,
 .h1, .h2, .h3, .h4, .h5, .h6 {
-	font-weight: @G-font-weight-semibold;
+	font-weight: @G_font_weight_semibold;
 	line-height: 1.1;
 	
 	small {
-		color: mix(@G-color-brand-primary, #FFF, 12%);
+		color: mix(@G_color_primary, #FFF, 12%);
 	}
 }
 
 h1, h2, h3 {
-	margin-top: @G-line-height-computed;
-	margin-bottom: (@G-line-height-computed / 2);
+	margin-top: @G_font_lineheight_computed;
+	margin-bottom: (@G_font_lineheight_computed / 2);
 }
 
 h4, h5, h6 {
-	margin-top: (@G-line-height-computed / 2);
-	margin-bottom: (@G-line-height-computed / 2);
+	margin-top: (@G_font_lineheight_computed / 2);
+	margin-bottom: (@G_font_lineheight_computed / 2);
 }
 
 h6 {
@@ -32,36 +32,36 @@ h6 {
 }
 
 h1, .h1 {
-	font-size: @G-font-size-h1;
+	font-size: @G_font_size_h1;
 }
 
 h2, .h2 {
-	font-size: @G-font-size-h2;
+	font-size: @G_font_size_h2;
 }
 
 h3, .h3 {
-	font-size: @G-font-size-h3;
+	font-size: @G_font_size_h3;
 }
 
 h4, .h4 {
-	font-size: @G-font-size-h4;
+	font-size: @G_font_size_h4;
 }
 
 h5, .h5 {
-	font-size: @G-font-size-h5;
+	font-size: @G_font_size_h5;
 }
 
 h6, .h6 {
-	font-size: @G-font-size-h6;
+	font-size: @G_font_size_h6;
 }
 
 // Body text
 // -------------------------
 
 p {
-	font-size: @G-font-size-base;
+	font-size: @G_font_size_base;
 	line-height: 1.5;
-	margin: 0 0 (@G-line-height-computed / 2);
+	margin: 0 0 (@G_font_lineheight_computed / 2);
 }
 
 // Emphasis & misc
@@ -130,8 +130,8 @@ small {
 //// -------------------------
 //
 //.page-header {
-//	padding-bottom: ((@G-line-height-computed / 2) - 1);
-//	margin: (@G-line-height-computed * 2) 0 @G-line-height-computed;
+//	padding-bottom: ((@G_font_lineheight_computed / 2) - 1);
+//	margin: (@G_font_lineheight_computed * 2) 0 @G_font_lineheight_computed;
 //	border-bottom: 2px solid @G-page-header-border-color;
 //}
 //
@@ -141,17 +141,17 @@ small {
 //// Unordered and Ordered lists
 //ul,
 //ol {
-//	margin-bottom: (@G-line-height-computed / 2);
+//	margin-bottom: (@G_font_lineheight_computed / 2);
 //}
 //
 //// Description Lists
 //dl {
-//	margin-bottom: @G-line-height-computed;
+//	margin-bottom: @G_font_lineheight_computed;
 //}
 //
 //dt,
 //dd {
-//	line-height: @G-line-height-base;
+//	line-height: @G_font_lineheight_base;
 //}
 //
 //// Horizontal description lists
@@ -183,18 +183,18 @@ small {
 //blockquote {
 //	border-left: 3px solid @G-blockquote-border-color;
 //	padding: 0 0 0 16px;
-//	margin: 0 0 @G-line-height-computed;
+//	margin: 0 0 @G_font_lineheight_computed;
 //	
 //	p {
-//		font-size: ceil((@G-font-size-base * 1.111)); // ~20px
+//		font-size: ceil((@G_font_size_base * 1.111)); // ~20px
 //		line-height: 1.55; // ~31px
 //		font-weight: normal;
 //		margin-bottom: .4em;
 //	}
 //	small,
 //	.small {
-//		font-size: @G-font-size-base;
-//		line-height: @G-line-height-base;
+//		font-size: @G_font_size_base;
+//		line-height: @G_font_lineheight_base;
 //		font-style: italic;
 //		color: @G-blockquote-small-color;
 //		
@@ -218,8 +218,8 @@ small {
 //
 //// Addresses
 //address {
-//	margin-bottom: @G-line-height-computed;
-//	line-height: @G-line-height-base;
+//	margin-bottom: @G_font_lineheight_computed;
+//	line-height: @G_font_lineheight_base;
 //}
 //
 //// Sup and Sub

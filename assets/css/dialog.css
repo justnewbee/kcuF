@@ -33,9 +33,9 @@
   background: #EEE;
 }
 .kcuF-dialog .dlg-header h4.dlg-title {
-  font-size: 12px;
-  height: 28px;
-  line-height: 28px;
+  font-size: 16px;
+  height: 32px;
+  line-height: 32px;
   margin: 0 24px 0 8px;
   cursor: default;
   overflow: hidden;
@@ -79,3 +79,4 @@
   float: left;
   margin: 0 4px 0 0;
 }
+/*# sourceMappingURL=build/assets/css/source */
